@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>모스부호 아트 (스크롤 버전)</title>
+  <style>
+    html, body {
+      margin: 0;
+      background: #fff;
+      overflow-x: auto; /* 가로 스크롤 가능 */
+      overflow-y: hidden; /* 세로 스크롤 제거 */
+      width: 300vw; /* 가로 크기 확장 */
+      height: 100vh;
+      font-family: 'Courier New', monospace;
+    }
+    .line {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 24px;
+      color: #aaa;
+      opacity: 0;
+      transition: opacity 1s ease, transform 4s ease;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const symbols = ['.', '-', ' '];
+    const minWidth = 80;
+    const maxWidth = 200;
+
+    function createMorseLine() {
+      const line = document.createElement('div');
+      line.classList.add('line');
+
+      const lineLength = Math.floor(Math.random() * (maxWidth - minWidth) + minWidth);
+      const chars = Array.from({ length: lineLength }, () => symbols[Math.floor(Math.random() * symbols.length)]);
+      line.textContent = chars.join('');
+
+      // 가로 위치 0~300vw
+      line.style.left = `${Math.random() * 300}vw`;
+      line.style.top = `${Math.random() * 100}vh`;
+      line.style.opacity = '0';
+      line.style.transform = `translateX(0)`;
+      document.body.appendChild(line);
+
+      requestAnimationFrame(() => {
+        line.style.opacity = '1';
+        line.style.transform = `translateX(${Math.random() * 60 - 30}vw)`;
+      });
+
+      const interval = setInterval(() => {
+        for (let i = 0; i < chars.length; i++) {
+          if (Math.random() < 0.2) {
+            chars[i] = symbols[Math.floor(Math.random() * symbols.length)];
+          }
+        }
+        line.textContent = chars.join('');
+      }, 200);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        line.style.opacity = '0';
+        setTimeout(() => line.remove(), 2000);
+      }, 6000 + Math.random() * 3000);
+    }
+
+    setInterval(() => {
+      for (let i = 0; i < 5; i++) {
+        createMorseLine();
+      }
+    }, 400);
+  </script>
+</body>
+</html>
